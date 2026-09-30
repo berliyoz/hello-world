@@ -1,0 +1,36 @@
+name: Temporary FlyBrain Linux VST3 Build
+
+on:
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build-linux-vst3:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install JUCE Linux dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            libasound2-dev \
+            libx11-dev libxext-dev libxinerama-dev libxrandr-dev libxcursor-dev \
+            libfreetype6-dev libfontconfig1-dev libgl1-mesa-dev \
+            libgtk-3-dev
+
+      - name: Configure
+        run: cmake -S FlyBrainBuild -B build -DCMAKE_BUILD_TYPE=Release
+
+      - name: Build VST3
+        run: cmake --build build --config Release --target FlyBrainSynth_VST3 --parallel 2
+
+      - name: Inspect build
+        run: find build/FlyBrainSynth_artefacts -maxdepth 6 -type f -o -type d | sort
+
+      - name: Upload Linux VST3
+        uses: actions/upload-artifact@v4
+        with:
+          name: FlyBrainSynth-Linux-VST3
+          path: build/FlyBrainSynth_artefacts/Release/VST3/**
+          if-no-files-found: error
