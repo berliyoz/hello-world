@@ -29,12 +29,25 @@ juce_add_plugin(FlyBrainSynth
 )
 
 juce_generate_juce_header(FlyBrainSynth)
-target_sources(FlyBrainSynth PRIVATE Source/Plugin.cpp)
+
+target_sources(FlyBrainSynth PRIVATE
+  Source/PluginProcessor.cpp
+  Source/PluginProcessor.h
+  Source/PluginEditor.cpp
+  Source/PluginEditor.h
+  Source/BrainEngine.cpp
+  Source/BrainEngine.h
+  Source/SynthEngine.cpp
+  Source/SynthEngine.h
+  Source/GeneratedNetwork.h
+)
+
 target_compile_definitions(FlyBrainSynth PUBLIC
   JUCE_WEB_BROWSER=0
   JUCE_USE_CURL=0
   JUCE_VST3_CAN_REPLACE_VST2=0
 )
+
 target_link_libraries(FlyBrainSynth
   PRIVATE juce::juce_audio_utils
   PUBLIC
